@@ -1,0 +1,156 @@
+{
+    "profile": {
+        "machine_id": "SERVER-NODE",
+        "auto_startup": false
+    },
+
+    "variables": [
+        {
+            "key": "capacity",
+            "value": 2048,
+            "type": "int"
+        },
+
+        {
+            "key": "in_use",
+            "value": 0,
+            "type": "int"
+        },
+
+        {
+            "key": "is_success",
+            "value": false,
+            "type": "bool"
+        },
+
+        {
+            "key": "storage",
+            "value": [],
+            "type": "array"
+        },
+
+        {
+            "key": "data",
+            "value": {
+                "id": null,
+                "name": null,
+                "size": null
+            },
+            "type": "dict"
+        }
+    ],
+
+    "states": [
+        {
+            "id": "S_INIT",
+            "entry_action": null,
+            "inner_action": null,
+            "exit_action": null
+        },
+
+        {
+            "id": "IDLE",
+            "entry_action": null,
+            "inner_action": null,
+            "exit_action": null
+        },
+
+        {
+            "id": "LOADING",
+            "entry_action": null,
+            "inner_action": {
+                "package": "functions",
+                "module": "storage",
+                "function": "load",
+                "params": ["storage", "data", "is_success"]
+            },
+            "exit_action": null
+        },
+
+        {
+            "id": "STORING",
+            "entry_action": null,
+            "inner_action": {
+                "package": "functions",
+                "module": "storage",
+                "function": "store",
+                "params": ["storage", "data", "capacity", "in_use", "is_success"]
+            },
+            "exit_action": null
+        },
+
+        {
+            "id": "S_FINAL",
+            "entry_action": null,
+            "inner_action": null,
+            "exit_action": null
+        }
+    ],
+
+    "transitions": [
+        {
+            "source": {"$ref": "#/states/0"},
+            "destination": {"$ref": "#/states/2"},
+            "event": "LOAD",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/1"},
+            "destination": {"$ref": "#/states/2"},
+            "event": "LOAD",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/0"},
+            "destination": {"$ref": "#/states/3"},
+            "event": "STORE",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/1"},
+            "destination": {"$ref": "#/states/3"},
+            "event": "STORE",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/2"},
+            "destination": {"$ref": "#/states/1"},
+            "event": "DONE",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/2"},
+            "destination": {"$ref": "#/states/1"},
+            "event": "REDIRECT",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/3"},
+            "destination": {"$ref": "#/states/1"},
+            "event": "DONE",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/3"},
+            "destination": {"$ref": "#/states/1"},
+            "event": "REDIRECT",
+            "action": null
+        },
+
+        {
+            "source": {"$ref": "#/states/1"},
+            "destination": {"$ref": "#/states/4"},
+            "event": "CLOSE",
+            "action": null
+        }
+    ],
+
+    "listener": null
+}
